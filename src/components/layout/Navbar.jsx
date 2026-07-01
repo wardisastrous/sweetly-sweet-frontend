@@ -19,7 +19,7 @@ export default function Navbar() {
   const dispatch   = useDispatch();
   const navigate   = useNavigate();
   const location   = useLocation();
-  const { isAuthenticated } = useSelector((s) => s.auth);
+  const { isAuthenticated, user } = useSelector((s) => s.auth);
   const cartItems  = useSelector((s) => s.cart.items);
   const cartCount  = cartItems.reduce((sum, i) => sum + i.quantity, 0);
   const [scrolled,    setScrolled]    = useState(false);
@@ -67,12 +67,10 @@ export default function Navbar() {
                 alt="Sweetly Sweet"
                 className="h-16 w-auto"
               />
-
               <div>
                 <p className="font-display text-[#1a1a1a] text-3xl leading-none font-semibold tracking-wide">
                   Sweetly Sweet
                 </p>
-
                 <p className="text-forest-600 text-xs font-mono tracking-[0.35em] uppercase leading-none mt-1">
                   Premium Chocolates
                 </p>
@@ -102,6 +100,15 @@ export default function Navbar() {
 
               {isAuthenticated ? (
                 <>
+                  {/* ← ONLY ADDITION: Admin button, visible only to ADMIN role */}
+                  {user?.role === "ADMIN" && (
+                    <Link
+                      to="/admin"
+                      className="hidden sm:block px-3 py-1.5 text-xs font-mono uppercase tracking-widest border border-forest-600 text-forest-700 hover:bg-forest-600 hover:text-white transition-colors mx-1"
+                    >
+                      Admin
+                    </Link>
+                  )}
                   <Link to="/orders" className="hidden sm:block p-2.5 text-[#5a5a5a] hover:text-forest-600 transition-colors">
                     <User size={18} />
                   </Link>
@@ -161,6 +168,12 @@ export default function Navbar() {
               ))}
               {isAuthenticated ? (
                 <>
+                  {/* ← Admin link in mobile menu too */}
+                  {user?.role === "ADMIN" && (
+                    <Link to="/admin" className="px-4 py-3 text-xs font-mono tracking-widest uppercase text-forest-700 font-semibold border-b border-beige-200">
+                      Admin Panel
+                    </Link>
+                  )}
                   <Link to="/orders" className="px-4 py-3 text-xs font-mono tracking-widest uppercase text-[#4a4a4a] border-b border-beige-200">My Orders</Link>
                   <Link to="/profile" className="px-4 py-3 text-xs font-mono tracking-widest uppercase text-[#4a4a4a] border-b border-beige-200">Profile</Link>
                   <button onClick={handleLogout} className="px-4 py-3 text-xs font-mono tracking-widest uppercase text-red-500 text-left">Logout</button>
