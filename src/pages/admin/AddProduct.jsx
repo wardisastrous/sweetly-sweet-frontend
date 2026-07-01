@@ -121,13 +121,13 @@ export default function AddProduct() {
               <label className="label-luxury">Product Name</label>
               <input type="text" value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                placeholder="Dark Truffle Box" className="input-luxury" disabled={isBusy} />
+                placeholder="Name" className="input-luxury" disabled={isBusy} />
             </div>
             <div>
               <label className="label-luxury">Description</label>
               <textarea value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
-                placeholder="Rich dark chocolate truffles..." rows={4}
+                placeholder="Description" rows={4}
                 className="input-luxury resize-none" disabled={isBusy} />
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -135,13 +135,13 @@ export default function AddProduct() {
                 <label className="label-luxury">Price (₹)</label>
                 <input type="number" min="0" step="0.01" value={form.price}
                   onChange={(e) => setForm({ ...form, price: e.target.value })}
-                  placeholder="899.00" className="input-luxury" disabled={isBusy} />
+                  placeholder="Price" className="input-luxury" disabled={isBusy} />
               </div>
               <div>
                 <label className="label-luxury">Sale Price (optional)</label>
                 <input type="number" min="0" step="0.01" value={form.salePrice}
                   onChange={(e) => setForm({ ...form, salePrice: e.target.value })}
-                  placeholder="699.00" className="input-luxury" disabled={isBusy} />
+                  placeholder="Sale Price" className="input-luxury" disabled={isBusy} />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">

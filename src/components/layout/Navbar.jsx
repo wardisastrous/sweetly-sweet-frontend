@@ -4,7 +4,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { ShoppingCart, User, LogOut, Search, Menu, X } from "lucide-react";
 import { logout } from "../../features/auth/authSlice";
 import { clearCart } from "../../features/cart/cartSlice";
-import logo from "../../assets/logo.png";
+import toast from "react-hot-toast";
+import logo from "../../assets/logo1.png";
 
 const NAV_LINKS = [
   { label: "All",     to: "/products" },
@@ -35,8 +36,12 @@ export default function Navbar() {
   useEffect(() => setMobileOpen(false), [location]);
 
   function handleLogout() {
+    localStorage.removeItem("token");
     dispatch(logout());
     dispatch(clearCart());
+
+    toast.success("Logged out successfully!");
+
     navigate("/");
   }
 

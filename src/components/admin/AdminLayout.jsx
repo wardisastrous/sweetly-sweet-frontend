@@ -1,6 +1,7 @@
 import { Link, useLocation, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Package, ShoppingBag, Tag, LayoutDashboard, ArrowLeft } from "lucide-react";
+import logo from "../../assets/logo3.png";
 
 const NAV_ITEMS = [
   { label: "Overview", to: "/admin", icon: LayoutDashboard, exact: true },
@@ -24,9 +25,7 @@ export default function AdminLayout() {
       <aside className="w-64 bg-forest-900 text-white flex flex-col shrink-0 min-h-screen">
         <div className="p-6 border-b border-forest-700">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-mint-400 flex items-center justify-center">
-              <span className="text-forest-950 text-xs font-mono font-bold">SS</span>
-            </div>
+            <img src={logo} alt="Sweetly Sweet" className="h-10 w-auto" />
             <div>
               <p className="font-display font-semibold text-sm leading-none">Sweetly Sweet</p>
               <p className="text-[9px] font-mono tracking-widest uppercase text-mint-300 mt-0.5">Admin Panel</p>

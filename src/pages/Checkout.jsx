@@ -68,12 +68,12 @@ export default function Checkout() {
             <h2 className="text-xs font-mono tracking-widest uppercase text-[#6a6a6a] mb-6 flex items-center gap-2"><MapPin size={14} /> Delivery Address</h2>
             <div className="bg-white border border-beige-200 p-6 space-y-4 shadow-sm">
               {[
-                { key:"fullName", label:"Full Name",       placeholder:"Priya Sharma" },
-                { key:"phone",    label:"Phone",           placeholder:"9876543210" },
-                { key:"street",   label:"Street Address",  placeholder:"12 MG Road, Apt 4B" },
-                { key:"city",     label:"City",            placeholder:"Ludhiana" },
-                { key:"state",    label:"State",           placeholder:"Punjab" },
-                { key:"pincode",  label:"Pincode",         placeholder:"141001" },
+                { key:"fullName", label:"Full Name",       placeholder:"Enter your full name" },
+                { key:"phone",    label:"Phone",           placeholder:"Enter your phone number" },
+                { key:"street",   label:"Street Address",  placeholder:"Enter your street address" },
+                { key:"city",     label:"City",            placeholder:"Enter your city" },
+                { key:"state",    label:"State",           placeholder:"Enter your state" },
+                { key:"pincode",  label:"Pincode",         placeholder:"Enter your pincode" },
               ].map(({ key, label, placeholder }) => (
                 <div key={key}>
                   <label className="label-luxury">{label}</label>
