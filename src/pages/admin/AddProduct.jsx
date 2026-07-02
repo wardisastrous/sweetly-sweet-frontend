@@ -46,7 +46,7 @@ export default function AddProduct() {
       const { data } = await axiosInstance.post("/api/admin/upload/image", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      uploadedUrls.push(data.Url);
+      uploadedUrls.push(data.url);
     }
     return uploadedUrls;
   }
