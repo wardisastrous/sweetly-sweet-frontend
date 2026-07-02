@@ -76,7 +76,8 @@ export default function OrderDetail() {
         <div className="bg-white border border-beige-200 p-6 shadow-sm">
           <h2 className="text-xs font-mono tracking-widest uppercase text-[#6a6a6a] mb-5">Items</h2>
           <div className="space-y-4">
-            {order.items.map((item) => (
+            {Array.isArray(order.items) &&
+              order.items.map((item) => (
               <div key={item.id} className="flex items-center gap-4 pb-4 border-b border-beige-100 last:border-0 last:pb-0">
                 <img src={item.product?.imageUrls?.[0] || "https://placehold.co/48x48/EDE5D5/2d6e30?text=SS"}
                   alt={item.productName} className="w-14 h-14 object-cover bg-beige-100 shrink-0" />
