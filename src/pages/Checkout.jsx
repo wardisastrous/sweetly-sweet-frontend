@@ -10,49 +10,143 @@ import { MapPin, ShieldCheck } from "lucide-react";
 export default function Checkout() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { user } = useSelector((s) => s.auth);
   const { items, coupon, discount } = useSelector((s) => s.cart);
   const [loading, setLoading] = useState(false);
-  const [address, setAddress] = useState({ fullName:"", phone:"", street:"", city:"", state:"", pincode:"" });
+  const [paymentMethod, setPaymentMethod] = useState("RAZORPAY");
+  const [address, setAddress] = useState({
+  fullName: user?.name || "",
+  phone: user?.phone || "",
+  street: user?.street || "",
+  city: user?.city || "",
+  state: user?.state || "",
+  pincode: user?.pincode || "",
+  });
 
   const subtotal = items.reduce((s, i) => s + (i.product.salePrice ?? i.product.price) * i.quantity, 0);
   const delivery  = subtotal >= 499 ? 0 : 49;
   const total     = Math.max(0, subtotal - discount) + delivery;
 
   async function handlePlaceOrder() {
-    if (Object.values(address).some((v) => !v.trim())) { toast.error("Please fill in all address fields"); return; }
-    setLoading(true);
-    try {
-      const { data: order } = await axiosInstance.post("/api/orders/checkout", { address, couponCode: coupon });
-      const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY,
-        amount: order.razorpayAmount,
-        currency: "INR",
-        name: "Sweetly Sweet",
-        description: `Order #${order.orderId}`,
-        order_id: order.razorpayOrderId,
-        handler: async (response) => {
-          try {
-            await axiosInstance.post("/api/orders/verify-payment", {
-              orderId: order.orderId,
-              razorpayOrderId: response.razorpay_order_id,
-              razorpayPaymentId: response.razorpay_payment_id,
-              razorpaySignature: response.razorpay_signature,
-            });
-            dispatch(clearCart());
-            navigate("/order-success", { state: { orderId: order.orderId } });
-          } catch { toast.error("Payment verification failed."); }
-        },
-        prefill: { name: address.fullName, contact: address.phone },
-        theme: { color: "#2d6e30" },
-      };
-      const rzp = new window.Razorpay(options);
-      rzp.on("payment.failed", () => toast.error("Payment failed."));
-      rzp.open();
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Could not create order");
-    } finally { setLoading(false); }
+  if (Object.values(address).some((v) => !v.trim())) {
+    toast.error("Please fill in all address fields");
+    return;
+  }
+  if (!/^[0-9]{10}$/.test(address.phone)) {
+    toast.error("Enter a valid 10-digit phone number");
+    return;
   }
 
+  if (!/^[0-9]{6}$/.test(address.pincode)) {
+    toast.error("Enter a valid 6-digit pincode");
+    return;
+  }
+  try {
+    await axiosInstance.put("/api/users/me", {
+      name: user?.name,
+      phone: address.phone,
+      street: address.street,
+      city: address.city,
+      state: address.state,
+      pincode: address.pincode,
+    });
+  } catch {
+    console.log("Address save skipped");
+  }
+
+  setLoading(true);
+
+  try {
+    const { data: order } = await axiosInstance.post(
+      "/api/orders/checkout",
+      {
+        address,
+        couponCode: coupon,
+        paymentMethod,
+      }
+    );
+
+    // CASH ON DELIVERY
+    if (paymentMethod === "COD") {
+      dispatch(clearCart());
+
+      toast.success("Order placed successfully!");
+
+      navigate("/order-success", {
+        state: {
+          orderId: order.orderId,
+        },
+      });
+
+      return;
+    }
+
+    // RAZORPAY PAYMENT
+
+    const options = {
+      key: import.meta.env.VITE_RAZORPAY_KEY,
+      amount: order.razorpayAmount,
+      currency: "INR",
+      name: "Sweetly Sweet",
+      description: `Order #${order.orderId}`,
+      order_id: order.razorpayOrderId,
+
+      handler: async (response) => {
+        try {
+          await axiosInstance.post(
+            "/api/orders/verify-payment",
+            {
+              orderId: order.orderId,
+              razorpayOrderId:
+                response.razorpay_order_id,
+              razorpayPaymentId:
+                response.razorpay_payment_id,
+              razorpaySignature:
+                response.razorpay_signature,
+            }
+          );
+
+          dispatch(clearCart());
+
+          navigate("/order-success", {
+            state: {
+              orderId: order.orderId,
+            },
+          });
+        } catch {
+          toast.error(
+            "Payment verification failed."
+          );
+        }
+      },
+
+      prefill: {
+        name: address.fullName,
+        contact: address.phone,
+      },
+
+      theme: {
+        color: "#2d6e30",
+      },
+    };
+
+    const rzp = new window.Razorpay(options);
+
+    rzp.on("payment.failed", () => {
+      toast.error("Payment failed.");
+    });
+
+    rzp.open();
+
+  } catch (err) {
+    toast.error(
+      err.response?.data?.message ||
+      "Could not create order"
+    );
+  } finally {
+    setLoading(false);
+  }
+}
   return (
     <div className="bg-beige-100 min-h-screen">
       <div className="bg-white border-b border-beige-200 py-12">
@@ -87,6 +181,35 @@ export default function Checkout() {
 
           <div>
             <h2 className="text-xs font-mono tracking-widest uppercase text-[#6a6a6a] mb-6">Order Summary</h2>
+            <div className="bg-white border border-beige-200 p-5 shadow-sm mb-6">
+              <h3 className="text-xs font-mono tracking-widest uppercase text-[#6a6a6a] mb-4">
+                Payment Method
+              </h3>
+
+              <label className="flex items-center gap-3 py-2 cursor-pointer">
+                <input
+                  type="radio"
+                  value="RAZORPAY"
+                  checked={paymentMethod === "RAZORPAY"}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                />
+                <span className="text-sm text-[#1a1a1a]">
+                  Pay Online (Razorpay)
+                </span>
+              </label>
+
+              <label className="flex items-center gap-3 py-2 cursor-pointer">
+                <input
+                  type="radio"
+                  value="COD"
+                  checked={paymentMethod === "COD"}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                />
+                <span className="text-sm text-[#1a1a1a]">
+                  Cash on Delivery
+                </span>
+              </label>
+            </div>
             <div className="bg-white border border-beige-200 p-6 shadow-sm">
               <div className="space-y-4 mb-6">
                 {items.map((item) => {
@@ -117,11 +240,22 @@ export default function Checkout() {
               </div>
               <button onClick={handlePlaceOrder} disabled={loading || items.length === 0}
                 className="btn-primary w-full mt-6 flex items-center justify-center gap-2 disabled:opacity-50">
-                {loading ? <Spinner size="sm" /> : `Pay ₹${total.toFixed(2)}`}
+                {loading ? (
+                <Spinner size="sm" />
+              ) : paymentMethod === "COD" ? (
+                `Place Order (COD)`
+              ) : (
+                `Pay ₹${total.toFixed(2)}`
+              )}
               </button>
               <div className="flex items-center justify-center gap-2 mt-4">
                 <ShieldCheck size={14} className="text-[#9a9a9a]" />
-                <p className="text-xs font-mono text-[#9a9a9a] tracking-widest uppercase">Secured by Razorpay</p>
+
+                <p className="text-xs font-mono text-[#9a9a9a] tracking-widest uppercase">
+                  {paymentMethod === "COD"
+                    ? "Cash on Delivery Available"
+                    : "Secured by Razorpay"}
+                </p>
               </div>
             </div>
           </div>
