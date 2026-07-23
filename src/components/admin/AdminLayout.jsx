@@ -1,6 +1,13 @@
 import { Link, useLocation, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Package, ShoppingBag, Tag, LayoutDashboard, ArrowLeft } from "lucide-react";
+import {
+  Package,
+  ShoppingBag,
+  Tag,
+  LayoutDashboard,
+  ArrowLeft,
+  Users,
+} from "lucide-react";
 import logo from "../../assets/logo3.png";
 
 const NAV_ITEMS = [
@@ -8,6 +15,7 @@ const NAV_ITEMS = [
   { label: "Products", to: "/admin/products", icon: Package },
   { label: "Orders", to: "/admin/orders", icon: ShoppingBag },
   { label: "Coupons", to: "/admin/coupons", icon: Tag },
+  { label: "Users", to: "/admin/users", icon: Users },
 ];
 
 export default function AdminLayout() {

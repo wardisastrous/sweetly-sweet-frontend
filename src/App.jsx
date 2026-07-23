@@ -30,6 +30,7 @@ import AddProduct from "./pages/admin/AddProduct";
 import ManageProducts from "./pages/admin/ManageProducts";
 import ManageOrders from "./pages/admin/ManageOrders";
 import ManageCoupons from "./pages/admin/ManageCoupons";
+import ManageUsers from "./pages/admin/ManageUsers";
 
 export default function App() {
   return (
@@ -42,6 +43,7 @@ export default function App() {
       />
 
       <Routes>
+        <Route path="/admin/users" element={<ManageUsers />} />
         {/* Admin Routes */}
         <Route
           path="/admin"
