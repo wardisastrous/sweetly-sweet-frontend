@@ -2,104 +2,434 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
 import Spinner from "../../components/ui/Spinner";
-import { Plus, Package, ShoppingBag, Tag, ArrowRight } from "lucide-react";
+
+import {
+  Plus,
+  ShoppingBag,
+  Tag,
+  ArrowRight,
+  DollarSign,
+  Users,
+  Package,
+  ShoppingCart,
+} from "lucide-react";
+
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
+
+const COLORS = [
+  "#2d6e30",
+  "#b98a36",
+  "#d97706",
+  "#2563eb",
+  "#dc2626",
+];
 
 export default function AdminOverview() {
+
+  const { data: analytics, isLoading: analyticsLoading } = useQuery({
+    queryKey: ["admin-analytics"],
+    queryFn: () =>
+      axiosInstance
+        .get("/api/admin/analytics")
+        .then((r) => r.data),
+  });
+
   const { data: orders, isLoading: ordersLoading } = useQuery({
     queryKey: ["admin-orders"],
-    queryFn: () => axiosInstance.get("/api/admin/orders").then((r) => r.data),
+    queryFn: () =>
+      axiosInstance
+        .get("/api/admin/orders")
+        .then((r) => r.data),
   });
 
-  const { data: productsPage, isLoading: productsLoading } = useQuery({
-    queryKey: ["admin-products-count"],
-    queryFn: () => axiosInstance.get("/api/products?limit=100").then((r) => r.data),
-  });
+  const isLoading = analyticsLoading || ordersLoading;
 
-  const isLoading = ordersLoading || productsLoading;
-  const totalRevenue = orders
-    ?.filter((o) => o.paymentStatus === "PAID")
-    .reduce((sum, o) => sum + Number(o.totalAmount), 0) || 0;
-  const pendingOrders = orders?.filter((o) => o.orderStatus === "PENDING" || o.orderStatus === "CONFIRMED").length || 0;
+  const statusData =
+    analytics?.orderStatusCounts
+      ? Object.entries(analytics.orderStatusCounts).map(
+          ([name, value]) => ({
+            name,
+            value,
+          })
+        )
+      : [];
 
   return (
     <div>
+
       <div className="bg-white border-b border-beige-200 py-12">
         <div className="px-8">
-          <p className="section-eyebrow">Dashboard</p>
-          <h1 className="section-heading">Overview</h1>
+          <p className="section-eyebrow">
+            Dashboard
+          </p>
+
+          <h1 className="section-heading">
+            Overview
+          </h1>
         </div>
       </div>
 
       <div className="p-8">
+
         {isLoading ? (
-          <div className="flex justify-center py-24"><Spinner size="lg" /></div>
+          <div className="flex justify-center py-24">
+            <Spinner size="lg" />
+          </div>
         ) : (
           <>
-            {/* Stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-              <div className="bg-white border border-beige-200 p-6 shadow-sm">
-                <p className="text-[10px] font-mono tracking-widest uppercase text-[#8a8a8a] mb-2">Total Revenue</p>
-                <p className="font-display text-3xl font-semibold text-forest-700">₹{totalRevenue.toFixed(2)}</p>
+
+            {/* KPI CARDS */}
+
+            <div className="grid lg:grid-cols-5 md:grid-cols-2 gap-4 mb-8">
+
+              <div className="bg-white border border-beige-200 p-6">
+                <DollarSign className="text-forest-700 mb-3" />
+                <p className="text-xs uppercase tracking-widest text-gray-500">
+                  Revenue
+                </p>
+
+                <h2 className="text-3xl font-display font-semibold">
+                  ₹{Number(
+                    analytics?.totalRevenue ?? 0
+                  ).toFixed(2)}
+                </h2>
               </div>
-              <div className="bg-white border border-beige-200 p-6 shadow-sm">
-                <p className="text-[10px] font-mono tracking-widest uppercase text-[#8a8a8a] mb-2">Total Orders</p>
-                <p className="font-display text-3xl font-semibold text-[#1a1a1a]">{orders?.length || 0}</p>
+
+              <div className="bg-white border border-beige-200 p-6">
+                <ShoppingBag className="text-forest-700 mb-3" />
+                <p className="text-xs uppercase tracking-widest text-gray-500">
+                  Orders
+                </p>
+
+                <h2 className="text-3xl font-display">
+                  {analytics?.totalOrders}
+                </h2>
               </div>
-              <div className="bg-white border border-beige-200 p-6 shadow-sm">
-                <p className="text-[10px] font-mono tracking-widest uppercase text-[#8a8a8a] mb-2">Pending Orders</p>
-                <p className="font-display text-3xl font-semibold text-yellow-600">{pendingOrders}</p>
+
+              <div className="bg-white border border-beige-200 p-6">
+                <Users className="text-forest-700 mb-3" />
+                <p className="text-xs uppercase tracking-widest text-gray-500">
+                  Customers
+                </p>
+
+                <h2 className="text-3xl font-display">
+                  {analytics?.totalCustomers}
+                </h2>
               </div>
+
+              <div className="bg-white border border-beige-200 p-6">
+                <Package className="text-forest-700 mb-3" />
+                <p className="text-xs uppercase tracking-widest text-gray-500">
+                  Products Sold
+                </p>
+
+                <h2 className="text-3xl font-display">
+                  {analytics?.productsSold}
+                </h2>
+              </div>
+
+              <div className="bg-white border border-beige-200 p-6">
+                <ShoppingCart className="text-forest-700 mb-3" />
+                <p className="text-xs uppercase tracking-widest text-gray-500">
+                  Avg Order
+                </p>
+
+                <h2 className="text-3xl font-display">
+                  ₹{Number(
+                    analytics?.averageOrderValue ?? 0
+                  ).toFixed(2)}
+                </h2>
+              </div>
+
             </div>
 
-            {/* Quick actions */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-              <Link to="/admin/products/new" className="bg-forest-700 text-white p-6 hover:bg-forest-800 transition-colors group">
-                <Plus size={20} className="mb-3" />
-                <p className="font-display font-semibold mb-1">Add Product</p>
-                <p className="text-xs text-forest-200">List a new chocolate</p>
-              </Link>
-              <Link to="/admin/orders" className="bg-white border border-beige-200 p-6 hover:border-forest-300 transition-colors shadow-sm group">
-                <ShoppingBag size={20} className="text-forest-600 mb-3" />
-                <p className="font-display font-semibold text-[#1a1a1a] mb-1">Manage Orders</p>
-                <p className="text-xs text-[#8a8a8a]">Update order status</p>
-              </Link>
-              <Link to="/admin/coupons" className="bg-white border border-beige-200 p-6 hover:border-forest-300 transition-colors shadow-sm group">
-                <Tag size={20} className="text-forest-600 mb-3" />
-                <p className="font-display font-semibold text-[#1a1a1a] mb-1">Manage Coupons</p>
-                <p className="text-xs text-[#8a8a8a]">Create discount codes</p>
-              </Link>
+            {/* CHARTS */}
+
+            <div className="grid lg:grid-cols-2 gap-6 mb-8">
+
+              <div className="bg-white border border-beige-200 p-6">
+
+                <h2 className="font-display text-xl mb-5">
+                  Monthly Revenue
+                </h2>
+
+                <ResponsiveContainer
+                  width="100%"
+                  height={300}
+                >
+
+                  <LineChart
+                    data={analytics?.monthlyRevenue || []}
+                  >
+
+                    <CartesianGrid strokeDasharray="3 3" />
+
+                    <XAxis dataKey="month" />
+
+                    <YAxis />
+
+                    <Tooltip />
+
+                    <Line
+                      type="monotone"
+                      dataKey="revenue"
+                      stroke="#2d6e30"
+                      strokeWidth={3}
+                    />
+
+                  </LineChart>
+
+                </ResponsiveContainer>
+
+              </div>
+
+              <div className="bg-white border border-beige-200 p-6">
+
+                <h2 className="font-display text-xl mb-5">
+                  Order Status
+                </h2>
+
+                <ResponsiveContainer
+                  width="100%"
+                  height={300}
+                >
+
+                  <PieChart>
+
+                    <Pie
+                      data={statusData}
+                      dataKey="value"
+                      nameKey="name"
+                      outerRadius={100}
+                      label
+                    >
+
+                      {statusData.map(
+                        (entry, index) => (
+                          <Cell
+                            key={index}
+                            fill={
+                              COLORS[
+                                index % COLORS.length
+                              ]
+                            }
+                          />
+                        )
+                      )}
+
+                    </Pie>
+
+                    <Tooltip />
+
+                  </PieChart>
+
+                </ResponsiveContainer>
+
+              </div>
+
             </div>
 
-            {/* Recent orders */}
-            <div className="bg-white border border-beige-200 shadow-sm">
-              <div className="flex items-center justify-between p-5 border-b border-beige-200">
-                <h2 className="font-display font-semibold text-[#1a1a1a]">Recent Orders</h2>
-                <Link to="/admin/orders" className="text-xs font-mono text-forest-600 hover:text-forest-800 flex items-center gap-1">
-                  View all <ArrowRight size={12} />
-                </Link>
-              </div>
-              {!orders?.length ? (
-                <p className="p-8 text-center text-[#8a8a8a] text-sm">No orders yet.</p>
-              ) : (
-                <div className="divide-y divide-beige-100">
-                  {orders.slice(0, 5).map((order) => (
-                    <div key={order.id} className="flex items-center justify-between p-4">
-                      <div>
-                        <p className="font-mono text-sm font-medium text-[#1a1a1a]">#{String(order.id).padStart(6, "0")}</p>
-                        <p className="text-xs text-[#8a8a8a] mt-0.5">{order.fullName}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-mono text-sm text-[#1a1a1a]">₹{Number(order.totalAmount).toFixed(2)}</p>
-                        <span className="text-[10px] font-mono uppercase text-forest-600">{order.orderStatus.replace(/_/g, " ")}</span>
-                      </div>
-                    </div>
-                  ))}
+                        <div className="grid lg:grid-cols-2 gap-6 mb-8">
+
+              {/* Top Selling Products */}
+
+              <div className="bg-white border border-beige-200 shadow-sm">
+
+                <div className="border-b border-beige-200 p-5">
+                  <h2 className="font-display text-xl">
+                    Top Selling Products
+                  </h2>
                 </div>
-              )}
+
+                {!analytics?.topProducts?.length ? (
+
+                  <p className="p-8 text-center text-gray-500">
+                    No sales yet.
+                  </p>
+
+                ) : (
+
+                  <div className="divide-y divide-beige-100">
+
+                    {analytics.topProducts.map((product, index) => (
+
+                      <div
+                        key={product.productName}
+                        className="flex items-center justify-between p-4"
+                      >
+
+                        <div>
+                          <p className="font-medium text-[#1a1a1a]">
+                            {index + 1}. {product.productName}
+                          </p>
+                        </div>
+
+                        <span className="font-mono text-forest-700">
+                          {product.quantitySold} sold
+                        </span>
+
+                      </div>
+
+                    ))}
+
+                  </div>
+
+                )}
+
+              </div>
+
+              {/* Quick Actions */}
+
+              <div className="grid gap-4">
+
+                <Link
+                  to="/admin/products/new"
+                  className="bg-forest-700 text-white p-6 hover:bg-forest-800 transition-colors"
+                >
+
+                  <Plus size={22} className="mb-3" />
+
+                  <p className="font-display text-lg font-semibold mb-1">
+                    Add Product
+                  </p>
+
+                  <p className="text-sm text-forest-200">
+                    Add a new chocolate product
+                  </p>
+
+                </Link>
+
+                <Link
+                  to="/admin/orders"
+                  className="bg-white border border-beige-200 p-6 hover:border-forest-300 transition-colors"
+                >
+
+                  <ShoppingBag
+                    size={22}
+                    className="text-forest-700 mb-3"
+                  />
+
+                  <p className="font-display text-lg font-semibold mb-1">
+                    Manage Orders
+                  </p>
+
+                  <p className="text-sm text-gray-500">
+                    Update order status
+                  </p>
+
+                </Link>
+
+                <Link
+                  to="/admin/coupons"
+                  className="bg-white border border-beige-200 p-6 hover:border-forest-300 transition-colors"
+                >
+
+                  <Tag
+                    size={22}
+                    className="text-forest-700 mb-3"
+                  />
+
+                  <p className="font-display text-lg font-semibold mb-1">
+                    Manage Coupons
+                  </p>
+
+                  <p className="text-sm text-gray-500">
+                    Create discount codes
+                  </p>
+
+                </Link>
+
+              </div>
+
             </div>
+
+            {/* Recent Orders */}
+
+            <div className="bg-white border border-beige-200 shadow-sm">
+
+              <div className="flex items-center justify-between p-5 border-b border-beige-200">
+
+                <h2 className="font-display font-semibold text-[#1a1a1a]">
+                  Recent Orders
+                </h2>
+
+                <Link
+                  to="/admin/orders"
+                  className="text-xs font-mono text-forest-600 hover:text-forest-800 flex items-center gap-1"
+                >
+                  View all
+                  <ArrowRight size={12} />
+                </Link>
+
+              </div>
+
+              {!orders?.length ? (
+
+                <p className="p-8 text-center text-gray-500">
+                  No orders yet.
+                </p>
+
+              ) : (
+
+                <div className="divide-y divide-beige-100">
+
+                  {orders.slice(0, 5).map((order) => (
+
+                    <div
+                      key={order.id}
+                      className="flex items-center justify-between p-4"
+                    >
+
+                      <div>
+
+                        <p className="font-mono font-medium">
+                          #{String(order.id).padStart(6, "0")}
+                        </p>
+
+                        <p className="text-xs text-gray-500 mt-1">
+                          {order.fullName}
+                        </p>
+
+                      </div>
+
+                      <div className="text-right">
+
+                        <p className="font-mono">
+                          ₹{Number(order.totalAmount).toFixed(2)}
+                        </p>
+
+                        <span className="text-xs uppercase text-forest-700">
+                          {order.orderStatus.replace(/_/g, " ")}
+                        </span>
+
+                      </div>
+
+                    </div>
+
+                  ))}
+
+                </div>
+
+              )}
+
+            </div>
+
           </>
         )}
+
       </div>
+
     </div>
   );
 }
