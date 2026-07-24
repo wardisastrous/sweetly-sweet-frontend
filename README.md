@@ -347,3 +347,18 @@ LinkedIn: https://linkedin.com/in/yourprofile
 # 📄 License
 
 This project is intended for educational and portfolio purposes.
+
+
+<img width="1280" height="832" alt="Screenshot 2026-07-24 at 10 28 05" src="https://github.com/user-attachments/assets/74ea1493-cd7e-4d3a-a4eb-3b974ea6a0fc" />
+<img width="1280" height="832" alt="Screenshot 2026-07-24 at 10 34 27" src="https://github.com/user-attachments/assets/548e85ea-2ee8-4c81-85f5-f168e5e55e0d" />
+<img width="1280" height="832" alt="Screenshot 2026-07-24 at 10 34 36" src="https://github.com/user-attachments/assets/83e0625a-eef8-4f9e-b463-04fa7dcd3c2f" />
+<img width="1280" height="832" alt="Screenshot 2026-07-24 at 10 35 00" src="https://github.com/user-attachments/assets/5def33cb-58dd-4d10-8260-f606cd4a47c8" />
+<img width="1280" height="832" alt="Screenshot 2026-07-24 at 10 35 17" src="https://github.com/user-attachments/assets/7534cade-baf8-43ad-bbb5-2d2354480ed4" />
+<img width="1280" height="832" alt="Screenshot 2026-07-24 at 10 35 23" src="https://github.com/user-attachments/assets/c0959e04-6700-43c1-ab71-2928c8e5ea34" />
+<img width="1280" height="832" alt="Screenshot 2026-07-24 at 10 35 31" src="https://github.com/user-attachments/assets/f5d39634-f637-4fa6-a73a-9fbf4a273cd7" />
+<img width="1280" height="832" alt="Screenshot 2026-07-24 at 10 35 47" src="https://github.com/user-attachments/assets/b6da83b6-74bd-4481-8540-67b0cfb3cec3" />
+<img width="1280" height="832" alt="Screenshot 2026-07-24 at 10 35 56" src="https://github.com/user-attachments/assets/1311b2b1-e2a3-4371-a909-4f9197c3f2cd" />
+<img width="1280" height="832" alt="Screenshot 2026-07-24 at 10 36 24" src="https://github.com/user-attachments/assets/089d1c5c-ffaa-4c14-93fc-a3769a9598cd" />
+<img width="1280" height="832" alt="Screenshot 2026-07-24 at 10 37 11" src="https://github.com/user-attachments/assets/b47ca7ac-b829-4a6b-9868-b06bde1819dd" />
+<img width="1280" height="832" alt="Screenshot 2026-07-24 at 10 37 21" src="https://github.com/user-attachments/assets/0ac87782-c1c2-41a7-8a97-78e3da3520f0" />
+
