@@ -149,7 +149,7 @@ export default function AddProduct() {
                 <label className="label-luxury">Stock Quantity</label>
                 <input type="number" min="0" value={form.stockQty}
                   onChange={(e) => setForm({ ...form, stockQty: e.target.value })}
-                  placeholder="50" className="input-luxury" disabled={isBusy} />
+                  placeholder="..." className="input-luxury" disabled={isBusy} />
               </div>
               <div>
                 <label className="label-luxury">Category</label>

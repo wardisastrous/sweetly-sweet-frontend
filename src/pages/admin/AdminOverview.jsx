@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
 import Spinner from "../../components/ui/Spinner";
-
+import CountUp from "react-countup";
 import {
   Plus,
   ShoppingBag,
@@ -100,9 +100,13 @@ export default function AdminOverview() {
                 </p>
 
                 <h2 className="text-3xl font-display font-semibold">
-                  ₹{Number(
-                    analytics?.totalRevenue ?? 0
-                  ).toFixed(2)}
+                  ₹
+                  <CountUp
+                    end={Number(analytics?.totalRevenue ?? 0)}
+                    duration={1.5}
+                    decimals={2}
+                    separator=","
+                  />
                 </h2>
               </div>
 
@@ -113,7 +117,11 @@ export default function AdminOverview() {
                 </p>
 
                 <h2 className="text-3xl font-display">
-                  {analytics?.totalOrders}
+                  <CountUp
+                    end={analytics?.totalOrders ?? 0}
+                    duration={1.5}
+                    separator=","
+                  />
                 </h2>
               </div>
 
@@ -124,7 +132,11 @@ export default function AdminOverview() {
                 </p>
 
                 <h2 className="text-3xl font-display">
-                  {analytics?.totalCustomers}
+                  <CountUp
+                    end={analytics?.totalCustomers ?? 0}
+                    duration={1.5}
+                    separator=","
+                  />
                 </h2>
               </div>
 
@@ -135,7 +147,11 @@ export default function AdminOverview() {
                 </p>
 
                 <h2 className="text-3xl font-display">
-                  {analytics?.productsSold}
+                  <CountUp
+                    end={analytics?.productsSold ?? 0}
+                    duration={1.5}
+                    separator=","
+                  />
                 </h2>
               </div>
 
@@ -146,9 +162,13 @@ export default function AdminOverview() {
                 </p>
 
                 <h2 className="text-3xl font-display">
-                  ₹{Number(
-                    analytics?.averageOrderValue ?? 0
-                  ).toFixed(2)}
+                  ₹
+                  <CountUp
+                    end={Number(analytics?.averageOrderValue ?? 0)}
+                    duration={1.5}
+                    decimals={2}
+                    separator=","
+                  />
                 </h2>
               </div>
 

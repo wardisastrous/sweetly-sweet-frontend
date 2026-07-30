@@ -1,14 +1,21 @@
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Plus } from "lucide-react";
+import { Plus, Heart } from "lucide-react";
 import toast from "react-hot-toast";
 import axiosInstance from "../../api/axiosInstance";
 import { setCart } from "../../features/cart/cartSlice";
 import StarRating from "./StarRating";
+import {
+  addWishlist,
+  removeWishlist,
+} from "../../features/wishlist/wishlistSlice";
 
 export default function ProductCard({ product }) {
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((s) => s.auth);
+  const wishlist = useSelector((s) => s.wishlist.ids);
+
+  const liked = wishlist.includes(product.id);
 
   const displayPrice = product.salePrice ?? product.price;
   const onSale = product.salePrice && product.salePrice < product.price;
@@ -25,6 +32,30 @@ export default function ProductCard({ product }) {
       toast.success("Added to cart");
     } catch { toast.error("Could not add to cart"); }
   }
+  
+  async function toggleWishlist(e) {
+  e.preventDefault();
+  e.stopPropagation();
+
+  if (!isAuthenticated) {
+    toast.error("Please login first");
+    return;
+  }
+
+  try {
+    if (liked) {
+      await axiosInstance.delete(`/api/wishlist/${product.id}`);
+      dispatch(removeWishlist(product.id));
+      toast.success("Removed from wishlist");
+    } else {
+      await axiosInstance.post(`/api/wishlist/${product.id}`);
+      dispatch(addWishlist(product.id));
+      toast.success("Added to wishlist");
+    }
+  } catch {
+    toast.error("Something went wrong");
+  }
+}
 
   return (
     <Link to={`/products/${product.id}`} className="card-luxury group block relative overflow-hidden">
@@ -41,12 +72,36 @@ export default function ProductCard({ product }) {
       )}
 
       {/* Add button */}
-      <button onClick={addToCart} disabled={product.stockQty === 0}
-        className="absolute top-3 right-3 z-10 w-8 h-8 bg-white border border-beige-300 text-[#5a5a5a]
-                   flex items-center justify-center hover:bg-forest-600 hover:text-white hover:border-forest-600
-                   disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 shadow-sm">
-        <Plus size={14} />
-      </button>
+      <div className="absolute top-3 right-3 z-10 flex flex-col gap-2">
+
+        <button
+          onClick={toggleWishlist}
+          className="w-8 h-8 bg-white border border-beige-300 flex items-center justify-center
+                    shadow-sm hover:border-red-400 transition-all"
+        >
+          <Heart
+            size={15}
+            className={`transition-all ${
+              liked
+                ? "fill-red-500 text-red-500"
+                : "text-[#666]"
+            }`}
+          />
+        </button>
+
+        <button
+          onClick={addToCart}
+          disabled={product.stockQty === 0}
+          className="w-8 h-8 bg-white border border-beige-300 text-[#5a5a5a]
+                    flex items-center justify-center hover:bg-forest-600
+                    hover:text-white hover:border-forest-600
+                    disabled:opacity-40 disabled:cursor-not-allowed
+                    transition-all shadow-sm"
+        >
+          <Plus size={14} />
+        </button>
+
+      </div>
 
       {/* Image */}
       <div className="aspect-square bg-beige-100 overflow-hidden">

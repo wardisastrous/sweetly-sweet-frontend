@@ -3,9 +3,10 @@ import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../api/axiosInstance";
 import ProductCard from "../components/ui/ProductCard";
-import Spinner from "../components/ui/Spinner";
+import ProductCardSkeleton from "../components/ui/ProductCardSkeleton";
 import { Search, SlidersHorizontal } from "lucide-react";
 import catalogueBanner from "../assets/catalogueBanner.png";
+import PageTransition from "../components/layout/PageTransition";
 
 const CATEGORIES = ["all", "dark", "milk", "white", "gifting", "seasonal"];
 
@@ -32,31 +33,40 @@ export default function Products() {
 
   const products = data?.content || [];
 
-  const filtered = products.filter((p) =>
-    p.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = products.filter((p) => {
+  const query = search.trim().toLowerCase();
 
   return (
+      p.name?.toLowerCase().includes(query) ||
+      p.category?.toLowerCase().includes(query) ||
+      p.description?.toLowerCase().includes(query)
+    );
+  });
+
+  return (
+    <PageTransition>
     <div className="bg-beige-100 min-h-screen">
 
       {/* Catalogue Banner */}
       <div
-        className="relative h-[200px] bg-cover bg-center border-b border-beige-200"
+        className="relative h-[170px] bg-cover bg-center border-b border-beige-200"
         style={{
           backgroundImage: `url(${catalogueBanner})`,
           backgroundPosition: "center right",
         }}
       >
-        <div className="absolute inset-0 bg-white/10"></div>
+        {/* Remove the overlay completely */}
 
         <div className="relative max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-center">
-          <p className="text-forest-600 text-lg md:text-xl font-mono tracking-[0.28em] uppercase mb-4 font-semibold"> Catalogue </p>
-        <h1 className="font-display text-5xl md:text-6xl font-semibold text-[#1a1a1a]">
-          Our Chocolates
-        </h1>
+          <p className="text-forest-600 text-lg md:text-xl font-mono tracking-[0.28em] uppercase mb-4 font-semibold">
+            Catalogue
+          </p>
+
+          <h1 className="font-display text-5xl md:text-6xl font-semibold text-[#1a1a1a]">
+            Our Chocolates
+          </h1>
         </div>
       </div>
-
       {/* Products Section */}
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
@@ -110,20 +120,38 @@ export default function Products() {
           ))}
         </div>
 
+        <p className="text-sm font-mono text-[#8a8a8a] mb-6">
+          {filtered.length} product{filtered.length !== 1 ? "s" : ""} found
+        </p>
+
         {/* Products */}
         {isLoading ? (
-          <div className="flex justify-center py-32">
-            <Spinner size="lg" />
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            {Array.from({ length: 8 }).map((_, index) => (
+              <ProductCardSkeleton key={index} />
+            ))}
           </div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-32">
-            <SlidersHorizontal
-              size={40}
-              className="mx-auto mb-4 text-beige-400"
+          <div className="text-center py-24">
+            <Search
+              size={54}
+              className="mx-auto mb-5 text-beige-400"
             />
-            <p className="text-[#8a8a8a] font-mono text-sm tracking-widest uppercase">
-              No products found
+
+            <h3 className="font-display text-2xl text-[#1a1a1a] mb-3">
+              No chocolates found
+            </h3>
+
+            <p className="text-[#8a8a8a] mb-6">
+              No chocolates match <span className="font-semibold">"{search}"</span>
             </p>
+
+            <button
+              onClick={() => setSearch("")}
+              className="btn-primary"
+            >
+              Clear Search
+            </button>
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -134,5 +162,6 @@ export default function Products() {
         )}
       </div>
     </div>
+    </PageTransition>
   );
 }

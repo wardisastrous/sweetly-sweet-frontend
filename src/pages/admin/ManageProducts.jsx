@@ -8,6 +8,7 @@ import {
 import toast from "react-hot-toast";
 import axiosInstance from "../../api/axiosInstance";
 import Spinner from "../../components/ui/Spinner";
+import EmptyState from "../../components/ui/EmptyState";
 import {
   Plus,
   Trash2,
@@ -203,9 +204,13 @@ export default function ManageProducts() {
             </div>
 
                         {filteredProducts.length === 0 ? (
-              <div className="bg-white border border-beige-200 p-12 text-center">
-                <p className="text-gray-500">No products found.</p>
-              </div>
+              <EmptyState
+                icon={<Package size={48} />}
+                title="No products found"
+                description="Try changing your search or filter, or add a new product to your catalogue."
+                buttonText="Add Product"
+                buttonLink="/admin/products/new"
+              />
             ) : (
               <div className="bg-white border border-beige-200 shadow-sm overflow-x-auto">
                 <table className="w-full text-sm">

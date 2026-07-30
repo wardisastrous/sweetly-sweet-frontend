@@ -31,8 +31,25 @@ import ManageProducts from "./pages/admin/ManageProducts";
 import ManageOrders from "./pages/admin/ManageOrders";
 import ManageCoupons from "./pages/admin/ManageCoupons";
 import ManageUsers from "./pages/admin/ManageUsers";
+import ScrollToTop from "./components/layout/ScrollToTop";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import axiosInstance from "./api/axiosInstance";
+import { setWishlist } from "./features/wishlist/wishlistSlice";
+import Wishlist from "./pages/Wishlist";
 
 export default function App() {
+  const dispatch = useDispatch();
+  const { token } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (!token) return;
+
+    axiosInstance
+      .get("/api/wishlist/ids")
+      .then((res) => dispatch(setWishlist(res.data)))
+      .catch(() => {});
+  }, [token, dispatch]);
   return (
     <>
       <Toaster
@@ -41,6 +58,8 @@ export default function App() {
           duration: 3000,
         }}
       />
+
+      <ScrollToTop />
 
       <Routes>
         <Route path="/admin/users" element={<ManageUsers />} />
@@ -157,6 +176,14 @@ export default function App() {
                     element={
                       <PrivateRoute>
                         <Profile />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="/wishlist"
+                    element={
+                      <PrivateRoute>
+                        <Wishlist />
                       </PrivateRoute>
                     }
                   />

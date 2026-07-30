@@ -6,6 +6,7 @@ import axiosInstance from "../api/axiosInstance";
 import { clearCart } from "../features/cart/cartSlice";
 import Spinner from "../components/ui/Spinner";
 import { MapPin, ShieldCheck } from "lucide-react";
+import PageTransition from "../components/layout/PageTransition";
 
 export default function Checkout() {
   const dispatch = useDispatch();
@@ -148,6 +149,7 @@ export default function Checkout() {
   }
 }
   return (
+    <PageTransition>
     <div className="bg-beige-100 min-h-screen">
       <div className="bg-white border-b border-beige-200 py-12">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -262,5 +264,6 @@ export default function Checkout() {
         </div>
       </div>
     </div>
+    </PageTransition>
   );
 }

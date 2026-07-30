@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   useQuery,
@@ -10,12 +10,17 @@ import toast from "react-hot-toast";
 import axiosInstance from "../api/axiosInstance";
 import { setCart } from "../features/cart/cartSlice";
 import StarRating from "../components/ui/StarRating";
-import Spinner from "../components/ui/Spinner";
+import ProductDetailSkeleton from "../components/ui/ProductDetailSkeleton";
+import PageTransition from "../components/layout/PageTransition";
 import {
   ShoppingCart,
   ArrowLeft,
   Plus,
   Minus,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  ZoomIn,
 } from "lucide-react";
 
 export default function ProductDetail() {
@@ -28,10 +33,11 @@ export default function ProductDetail() {
 
   const [qty, setQty] = useState(1);
   const [activeImg, setActiveImg] = useState(0);
-
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
 
+  
   const { data: product, isLoading } = useQuery({
     queryKey: ["product", id],
     queryFn: () =>
@@ -77,6 +83,34 @@ export default function ProductDetail() {
       );
     },
   });
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if (!lightboxOpen) return;
+
+      const imageCount = product?.imageUrls?.length || 1;
+
+      if (e.key === "Escape") {
+        setLightboxOpen(false);
+      }
+
+      if (e.key === "ArrowLeft") {
+        setActiveImg((prev) =>
+          prev === 0 ? imageCount - 1 : prev - 1
+        );
+      }
+
+      if (e.key === "ArrowRight") {
+        setActiveImg((prev) =>
+          prev === imageCount - 1 ? 0 : prev + 1
+        );
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () =>
+      window.removeEventListener("keydown", handleKeyDown);
+  }, [lightboxOpen, product]);
 
   async function addToCart() {
     if (!isAuthenticated) {
@@ -96,13 +130,9 @@ export default function ProductDetail() {
       toast.error("Could not add to cart");
     }
   }
-    if (isLoading)
-    return (
-      <div className="flex justify-center py-32 bg-beige-100 min-h-screen">
-        <Spinner size="lg" />
-      </div>
-    );
-
+    if (isLoading) {
+      return <ProductDetailSkeleton />;
+    }
   if (!product)
     return (
       <div className="text-center py-32 bg-beige-100 min-h-screen">
@@ -126,7 +156,9 @@ export default function ProductDetail() {
       ? product.imageUrls
       : ["https://placehold.co/600x600/EDE5D5/2d6e30?text=SS"];
 
+  
   return (
+    <PageTransition>
     <div className="bg-beige-100 min-h-screen">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
@@ -145,8 +177,13 @@ export default function ProductDetail() {
               <img
                 src={images[activeImg]}
                 alt={product.name}
-                className="w-full h-full object-cover"
+                onClick={() => setLightboxOpen(true)}
+                className="w-full h-full object-cover cursor-zoom-in transition-transform duration-300 hover:scale-105"
               />
+
+              <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur border border-beige-200 rounded-full p-2 shadow pointer-events-none">
+                <ZoomIn size={18} />
+              </div>
 
               {onSale && (
                 <div className="absolute top-4 left-4 bg-forest-600 text-white text-[10px] font-mono font-bold tracking-widest px-2.5 py-1 uppercase">
@@ -342,8 +379,98 @@ export default function ProductDetail() {
           </div>
 
         </section>
+        {/* IMAGE LIGHTBOX */}
 
+        {lightboxOpen && (
+          <div
+            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center"
+            onClick={() => setLightboxOpen(false)}
+          >
+
+            {/* Close */}
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightboxOpen(false);
+              }}
+              className="absolute top-6 right-6 text-white hover:scale-110 transition"
+            >
+              <X size={32} />
+            </button>
+
+            {/* Previous */}
+
+            {images.length > 1 && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveImg((prev) =>
+                    prev === 0 ? images.length - 1 : prev - 1
+                  );
+                }}
+                className="absolute left-6 text-white hover:scale-110 transition"
+              >
+                <ChevronLeft size={44} />
+              </button>
+            )}
+
+            {/* Image */}
+
+            <img
+              src={images[activeImg]}
+              alt={product.name}
+              onClick={(e) => e.stopPropagation()}
+              className="max-h-[85vh] max-w-[90vw] object-contain rounded shadow-2xl"
+            />
+
+            {/* Next */}
+
+            {images.length > 1 && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveImg((prev) =>
+                    prev === images.length - 1 ? 0 : prev + 1
+                  );
+                }}
+                className="absolute right-6 text-white hover:scale-110 transition"
+              >
+                <ChevronRight size={44} />
+              </button>
+            )}
+
+            {/* Thumbnails */}
+
+            {images.length > 1 && (
+              <div
+                className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 bg-black/40 px-4 py-3 rounded-xl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {images.map((img, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setActiveImg(index)}
+                    className={`w-16 h-16 overflow-hidden rounded border-2 transition ${
+                      activeImg === index
+                        ? "border-white"
+                        : "border-transparent"
+                    }`}
+                  >
+                    <img
+                      src={img}
+                      alt=""
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+
+          </div>
+        )}
       </div>
     </div>
+    </PageTransition>
   );
 }

@@ -1,11 +1,20 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { ShoppingCart, User, LogOut, Search, Menu, X } from "lucide-react";
+import {
+  ShoppingCart,
+  User,
+  LogOut,
+  Search,
+  Menu,
+  X,
+  Heart,
+} from "lucide-react";
 import { logout } from "../../features/auth/authSlice";
 import { clearCart } from "../../features/cart/cartSlice";
 import toast from "react-hot-toast";
 import logo from "../../assets/logo1.png";
+
 
 const NAV_LINKS = [
   { label: "All",     to: "/products" },
@@ -22,6 +31,8 @@ export default function Navbar() {
   const location   = useLocation();
   const { isAuthenticated, user } = useSelector((s) => s.auth);
   const cartItems  = useSelector((s) => s.cart.items);
+  const wishlistItems = useSelector((s) => s.wishlist.ids);
+  const wishlistCount = wishlistItems.length;
   const cartCount  = cartItems.reduce((sum, i) => sum + i.quantity, 0);
   const [scrolled,    setScrolled]    = useState(false);
   const [mobileOpen,  setMobileOpen]  = useState(false);
@@ -128,7 +139,23 @@ export default function Navbar() {
                 </Link>
               )}
 
-              <Link to="/cart" className="relative p-2.5 text-[#5a5a5a] hover:text-forest-600 transition-colors">
+              <Link
+                to="/wishlist"
+                className="relative p-2.5 text-[#5a5a5a] hover:text-red-500 transition-colors"
+              >
+                <Heart size={18} />
+
+                {wishlistCount > 0 && (
+                  <span className="absolute top-1 right-1 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold font-mono">
+                    {wishlistCount}
+                  </span>
+                )}
+              </Link>
+
+              <Link
+                to="/cart"
+                className="relative p-2.5 text-[#5a5a5a] hover:text-forest-600 transition-colors"
+              >
                 <ShoppingCart size={18} />
                 {cartCount > 0 && (
                   <span className="absolute top-1 right-1 bg-forest-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold font-mono">
@@ -175,11 +202,27 @@ export default function Navbar() {
                 <>
                   {/* ← Admin link in mobile menu too */}
                   {user?.role === "ADMIN" && (
-                    <Link to="/admin" className="px-4 py-3 text-xs font-mono tracking-widest uppercase text-forest-700 font-semibold border-b border-beige-200">
+                    <Link
+                      to="/admin"
+                      className="px-4 py-3 text-xs font-mono tracking-widest uppercase text-forest-700 font-semibold border-b border-beige-200"
+                    >
                       Admin Panel
                     </Link>
                   )}
-                  <Link to="/orders" className="px-4 py-3 text-xs font-mono tracking-widest uppercase text-[#4a4a4a] border-b border-beige-200">My Orders</Link>
+
+                  <Link
+                    to="/wishlist"
+                    className="px-4 py-3 text-xs font-mono tracking-widest uppercase text-[#4a4a4a] border-b border-beige-200"
+                  >
+                    Wishlist
+                  </Link>
+
+                  <Link
+                    to="/orders"
+                    className="px-4 py-3 text-xs font-mono tracking-widest uppercase text-[#4a4a4a] border-b border-beige-200"
+                  >
+                    My Orders
+                  </Link>
                   <Link to="/profile" className="px-4 py-3 text-xs font-mono tracking-widest uppercase text-[#4a4a4a] border-b border-beige-200">Profile</Link>
                   <button onClick={handleLogout} className="px-4 py-3 text-xs font-mono tracking-widest uppercase text-red-500 text-left">Logout</button>
                 </>

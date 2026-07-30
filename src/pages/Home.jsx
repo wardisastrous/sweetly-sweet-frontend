@@ -10,6 +10,7 @@ import darkImage from "../assets/dark.png";
 import milkImage from "../assets/milk.png";
 import whiteImage from "../assets/white.png";
 import giftImage from "../assets/gift.png";
+import PageTransition from "../components/layout/PageTransition";
 
 const CATEGORIES = [
   { name: "Dark Chocolate", slug: "dark",    desc: "Healthy",   image: darkImage,   overlay: "BOLD & INTENSE",      },
@@ -32,6 +33,7 @@ export default function Home() {
   });
 
   return (
+     <PageTransition>
     <div className="bg-beige-100">
 
       {/* HERO */}
@@ -42,7 +44,7 @@ export default function Home() {
         <div className="relative max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 w-full py-24">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
-              <p className="section-eyebrow">New Collection — 2025</p>
+              <p className="section-eyebrow">New Collection — 2026</p>
               <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-semibold text-[#1a1a1a] leading-[1.05] tracking-tight mb-6">
                 Chocolate<br />
                 <span className="italic text-forest-600">Crafted for</span><br />
@@ -229,5 +231,6 @@ export default function Home() {
   </div>
 </section>
     </div>
+    </PageTransition>
   );
 }

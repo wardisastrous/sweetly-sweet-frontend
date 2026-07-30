@@ -7,6 +7,10 @@ import axiosInstance from "../api/axiosInstance";
 import { setCart, setCoupon, clearCoupon } from "../features/cart/cartSlice";
 import Spinner from "../components/ui/Spinner";
 import { Trash2, Plus, Minus, Tag, ArrowRight } from "lucide-react";
+import PageTransition from "../components/layout/PageTransition";
+import EmptyState from "../components/ui/EmptyState";
+import { ShoppingCart } from "lucide-react";
+import catalogueBanner from "../assets/catalogueBanner.png";
 
 export default function Cart() {
   const dispatch = useDispatch();
@@ -55,9 +59,18 @@ export default function Cart() {
   if (isLoading) return <div className="flex justify-center py-32 bg-beige-100 min-h-screen"><Spinner size="lg" /></div>;
 
   return (
+    <PageTransition>
     <div className="bg-beige-100 min-h-screen">
-      <div className="bg-white border-b border-beige-200 py-12">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div
+        className="relative border-b border-beige-200 py-12 bg-cover bg-center"
+        style={{
+          backgroundImage: `url(${catalogueBanner})`,
+          backgroundPosition: "center right",
+        }}
+      >
+        <div className="absolute inset-0 bg-white/50"></div>
+
+        <div className="relative max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           <p className="section-eyebrow">Review</p>
           <h1 className="section-heading">Your Cart</h1>
         </div>
@@ -65,10 +78,13 @@ export default function Cart() {
 
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {items.length === 0 ? (
-          <div className="text-center py-32">
-            <p className="text-[#8a8a8a] font-mono text-sm tracking-widest uppercase mb-6">Your cart is empty</p>
-            <Link to="/products" className="btn-primary inline-flex items-center gap-2">Browse Chocolates <ArrowRight size={16} /></Link>
-          </div>
+          <EmptyState
+            icon={<ShoppingCart size={48} />}
+            title="Your cart is empty"
+            description="Looks like you haven't added any chocolates yet. Discover our handcrafted collection."
+            buttonText="Browse Chocolates"
+            buttonLink="/products"
+          />
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-3">
@@ -123,7 +139,7 @@ export default function Cart() {
                 )}
               </div>
 
-              <div className="bg-white border border-beige-200 p-5 shadow-sm">
+              <div className=" border border-beige-200 p-5 shadow-sm">
                 <h3 className="text-xs font-mono tracking-widest uppercase text-[#6a6a6a] mb-5">Order Summary</h3>
                 <div className="space-y-3 text-sm font-mono">
                   <div className="flex justify-between text-[#5a5a5a]"><span>Subtotal</span><span>₹{subtotal.toFixed(2)}</span></div>
@@ -150,5 +166,6 @@ export default function Cart() {
         )}
       </div>
     </div>
+    </PageTransition>
   );
 }

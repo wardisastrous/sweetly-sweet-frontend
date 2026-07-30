@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axiosInstance from "../api/axiosInstance";
 import Spinner from "../components/ui/Spinner";
 import { Package, ChevronRight, ArrowRight } from "lucide-react";
+import EmptyState from "../components/ui/EmptyState";
 
 const STATUS_STYLE = {
   PENDING:          "bg-yellow-50 text-yellow-700 border-yellow-200",
@@ -32,13 +33,13 @@ export default function OrderHistory() {
 
       <div className="max-w-[900px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {!orders?.length ? (
-          <div className="text-center py-32">
-            <div className="w-16 h-16 border border-beige-300 bg-white flex items-center justify-center mx-auto mb-6 shadow-sm">
-              <Package size={28} className="text-beige-400" />
-            </div>
-            <p className="text-[#8a8a8a] font-mono text-sm tracking-widest uppercase mb-6">No orders yet</p>
-            <Link to="/products" className="btn-primary inline-flex items-center gap-2">Start Shopping <ArrowRight size={15} /></Link>
-          </div>
+          <EmptyState
+            icon={<Package size={48} />}
+            title="No orders yet"
+            description="Once you place your first order, it will appear here for easy tracking."
+            buttonText="Start Shopping"
+            buttonLink="/products"
+          />
         ) : (
           <div className="space-y-3">
             {orders.map((order) => (

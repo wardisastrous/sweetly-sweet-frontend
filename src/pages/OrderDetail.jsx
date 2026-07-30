@@ -2,8 +2,14 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../api/axiosInstance";
 import Spinner from "../components/ui/Spinner";
-import { ArrowLeft, CheckCircle, Circle } from "lucide-react";
+import {
+  ArrowLeft,
+  CheckCircle,
+  Circle,
+  Download,
+} from "lucide-react";
 
+import generateInvoice from "../utils/generateInvoice";
 const STEPS = ["CONFIRMED", "SHIPPED", "OUT_FOR_DELIVERY", "DELIVERED"];
 const STEP_LABELS = { CONFIRMED:"Confirmed", SHIPPED:"Shipped", OUT_FOR_DELIVERY:"Out for Delivery", DELIVERED:"Delivered" };
 
@@ -29,10 +35,31 @@ export default function OrderDetail() {
             className="flex items-center gap-1.5 text-[#8a8a8a] hover:text-forest-600 transition-colors text-xs font-mono tracking-widest uppercase mb-5">
             <ArrowLeft size={14} /> Back to Orders
           </button>
-          <p className="section-eyebrow">Order #{String(order.id).padStart(6, "0")}</p>
-          <h1 className="section-heading">
-            {new Date(order.createdAt).toLocaleDateString("en-IN", { day:"numeric", month:"long", year:"numeric" })}
-          </h1>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+
+            <div>
+              <p className="section-eyebrow">
+                Order #{String(order.id).padStart(6, "0")}
+              </p>
+
+              <h1 className="section-heading">
+                {new Date(order.createdAt).toLocaleDateString("en-IN", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })}
+              </h1>
+            </div>
+
+            <button
+              onClick={() => generateInvoice(order)}
+              className="btn-primary flex items-center gap-2 self-start"
+            >
+              <Download size={16} />
+              Download Invoice
+            </button>
+
+          </div>
         </div>
       </div>
 

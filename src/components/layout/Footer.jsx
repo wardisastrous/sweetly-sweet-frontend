@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import logo from "../../assets/logo0.png";
+import { FaInstagram, FaFacebookF } from "react-icons/fa";
 
 export default function Footer() {
   return (
@@ -30,14 +31,35 @@ export default function Footer() {
             </p>
 
             <div className="flex gap-3">
-              {["IG", "TW", "FB"].map((s) => (
-                <div
-                  key={s}
-                  className="w-8 h-8 border border-beige-400 bg-white flex items-center justify-center text-[#6a6a6a] hover:border-forest-500 hover:text-forest-600 transition-colors cursor-pointer"
-                >
-                  <span className="text-[10px] font-mono">{s}</span>
-                </div>
-              ))}
+
+              <a
+                href="#"
+                className="w-10 h-10 border border-beige-300 bg-white flex items-center justify-center
+                          text-[#6a6a6a]
+                          hover:bg-forest-600
+                          hover:border-forest-600
+                          hover:text-white
+                          hover:-translate-y-1
+                          hover:shadow-md
+                          transition-all duration-300"
+              >
+                <FaInstagram size={18} />
+              </a>
+
+              <a
+                href="#"
+                className="w-10 h-10 border border-beige-300 bg-white flex items-center justify-center
+                          text-[#6a6a6a]
+                          hover:bg-forest-600
+                          hover:border-forest-600
+                          hover:text-white
+                          hover:-translate-y-1
+                          hover:shadow-md
+                          transition-all duration-300"
+              >
+                <FaFacebookF size={18} />
+              </a>
+
             </div>
           </div>
 
