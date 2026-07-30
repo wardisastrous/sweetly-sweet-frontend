@@ -37,6 +37,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axiosInstance from "./api/axiosInstance";
 import { setWishlist } from "./features/wishlist/wishlistSlice";
 import Wishlist from "./pages/Wishlist";
+import EditProduct from "./pages/admin/EditProduct";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -186,6 +187,10 @@ export default function App() {
                         <Wishlist />
                       </PrivateRoute>
                     }
+                  />
+                  <Route
+                      path="/admin/products/:id/edit"
+                      element={<EditProduct />}
                   />
                 </Routes>
               </main>
