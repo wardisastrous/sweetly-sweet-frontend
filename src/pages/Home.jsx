@@ -68,9 +68,9 @@ export default function Home() {
                 <img src={heroImage} alt="Premium chocolates" className="w-full h-full object-contain" />
                 <div className="absolute bottom-6 left-6 right-6 bg-white/90 backdrop-blur-sm border border-beige-200 p-4 shadow-lg">
                   <p className="text-[10px] font-mono tracking-widest uppercase text-forest-600 mb-1">New Arrival</p>
-                  <p className="font-display text-[#1a1a1a] font-semibold">Peanut Butter Chocolate Collection</p>
+                  <p className="font-display text-[#1a1a1a] font-semibold">Mango & Peanut Butter Chocolate Collection</p>
                   <div className="flex items-center justify-between mt-2">
-                    <span className="font-mono text-[#1a1a1a] font-semibold">₹399</span>
+                    <span className="font-mono text-[#1a1a1a] font-semibold">₹199</span>
                     <Link to="/products" className="text-forest-600 text-xs font-mono tracking-widest uppercase flex items-center gap-1 hover:text-forest-800 transition-colors">
                       Explore <ArrowUpRight size={12} />
                     </Link>
