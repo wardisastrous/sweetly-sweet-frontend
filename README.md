@@ -1,5 +1,7 @@
 # 🍫 Sweetly Sweet
 
+Working Link: https://sweetly-sweet-frontend.vercel.app/
+
 A full-stack premium chocolate e-commerce web application built using **Spring Boot**, **React**, and **PostgreSQL**. The platform provides customers with a seamless shopping experience while offering administrators a comprehensive dashboard to manage products, orders, inventory, coupons, users, and sales analytics.
 
 ---
