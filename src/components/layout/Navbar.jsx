@@ -79,16 +79,16 @@ export default function Navbar() {
             {/* Logo */}
             <Link
               to="/"
-              className="flex items-center gap-2 min-w-0 flex-1"
+              className="flex items-center gap-2"
             >
               <img
                 src={logo}
                 alt="Sweetly Sweet"
-                className="h-12 md:h-16 w-auto flex-shrink-0"
+                className="hidden sm:block h-16 w-auto"
               />
 
-              <div className="min-w-0">
-                <p className="font-display text-xl md:text-3xl leading-none font-semibold tracking-wide truncate">
+              <div>
+                <p className="font-display text-3xl leading-none font-semibold tracking-wide">
                   Sweetly Sweet
                 </p>
 
