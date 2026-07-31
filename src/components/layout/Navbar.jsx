@@ -88,11 +88,11 @@ export default function Navbar() {
               />
 
               <div>
-                <p className="font-display text-[2rem] sm:text-3xl leading-none font-semibold tracking-wide whitespace-nowrap">
+                <p className="font-display text-[#1a1a1a] text-xl sm:text-3xl leading-none font-semibold tracking-wide whitespace-nowrap">
                   Sweetly Sweet
                 </p>
 
-                <p className="hidden sm:block text-forest-600 text-xs font-mono tracking-[0.35em] uppercase leading-none mt-1">
+                <p className="text-forest-600 text-[8px] sm:text-xs font-mono tracking-[0.28em] uppercase leading-none mt-1">
                   Premium Chocolates
                 </p>
               </div>
