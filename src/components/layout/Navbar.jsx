@@ -74,20 +74,25 @@ export default function Navbar() {
           : "bg-beige-100 border-b border-beige-300"
       }`}>
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-16 gap-2 overflow-hidden">
 
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-4 shrink-0">
+            <Link
+              to="/"
+              className="flex items-center gap-2 min-w-0 flex-1"
+            >
               <img
                 src={logo}
                 alt="Sweetly Sweet"
-                className="h-16 w-auto"
+                className="h-12 md:h-16 w-auto flex-shrink-0"
               />
-              <div>
-                <p className="font-display text-[#1a1a1a] text-3xl leading-none font-semibold tracking-wide">
+
+              <div className="min-w-0">
+                <p className="font-display text-xl md:text-3xl leading-none font-semibold tracking-wide truncate">
                   Sweetly Sweet
                 </p>
-                <p className="text-forest-600 text-xs font-mono tracking-[0.35em] uppercase leading-none mt-1">
+
+                <p className="text-forest-600 text-[10px] md:text-xs font-mono tracking-[0.2em] md:tracking-[0.35em] uppercase leading-none mt-1 truncate">
                   Premium Chocolates
                 </p>
               </div>
@@ -108,9 +113,9 @@ export default function Navbar() {
             </div>
 
             {/* Right actions */}
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-0 flex-shrink-0">
               <button onClick={() => setSearchOpen(!searchOpen)}
-                className="p-2.5 text-[#5a5a5a] hover:text-forest-600 transition-colors">
+                className="p-2.5 md:p-2.5 text-[#5a5a5a] hover:text-forest-600 transition-colors">
                 <Search size={18} />
               </button>
 
