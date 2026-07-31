@@ -115,7 +115,7 @@ export default function Navbar() {
             {/* Right actions */}
             <div className="flex items-center gap-0 flex-shrink-0">
               <button onClick={() => setSearchOpen(!searchOpen)}
-                className="p-2.5 md:p-2.5 text-[#5a5a5a] hover:text-forest-600 transition-colors">
+                className="p-1.5 md:p-2.5 text-[#5a5a5a] hover:text-forest-600 transition-colors">
                 <Search size={18} />
               </button>
 
